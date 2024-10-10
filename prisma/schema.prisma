@@ -14,5 +14,27 @@ datasource db {
 }
 
 model Server {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id             String     @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  ipAddress      String
+  port           Int
+  version        String
+  status         String
+  maxPlayers     Int
+  currentPlayers Int
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  rconPassword   String
+  description    String?
+  discordGuildId String
+  ops            Operator[]
+}
+
+model Operator {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String
+  level     Int
+  createdAt DateTime @default(now()) 
+  serverId  String   @db.ObjectId
+  server    Server   @relation(fields: [serverId], references: [id])
 }
