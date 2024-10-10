@@ -1,0 +1,36 @@
+{
+  "name": "discord-minecraft-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "engines": {
+    "node": "20.17.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/bot.js",
+    "dev": "ts-node-dev --respawn src/index.ts"
+  },
+  "keywords": [
+    "minecraft",
+    "discord",
+    "bot",
+    "server"
+  ],
+  "author": "Guilherme Gomes David <guidev001@gmail.com>",
+  "license": "ISC",
+  "description": "Bot do discord para manuseio de servidor do minecraft",
+  "dependencies": {
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.5",
+    "rcon-client": "^4.2.5",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "@types/ws": "^8.5.12",
+    "prisma": "^5.20.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.6.3"
+  }
+}
