@@ -8,7 +8,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/bot.js",
-    "dev": "ts-node-dev --respawn src/index.ts"
+    "dev": "ts-node-dev --respawn src/bot.ts"
   },
   "keywords": [
     "minecraft",

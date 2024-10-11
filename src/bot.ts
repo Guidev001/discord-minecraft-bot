@@ -1,13 +1,20 @@
+// src/bot.ts
+
 import { Client, GatewayIntentBits } from 'discord.js';
-import ready from './events/ready';
-import messageCreate from './events/message';
 import config from './config';
+import ready from './events/ready';
+import interactionCreate from './events/interactionCreate';
+import { registerCommands } from './commands/register';
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
+  intents: [GatewayIntentBits.Guilds],
 });
 
-ready(client);
-client.on('messageCreate', messageCreate);
+client.once('ready', async () => {
+  await registerCommands();
+  ready(client);
+});
+
+client.on('interactionCreate', interactionCreate);
 
 client.login(config.DISCORD_TOKEN);
