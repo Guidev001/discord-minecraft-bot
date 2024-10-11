@@ -20,12 +20,16 @@
   "license": "ISC",
   "description": "Bot do discord para manuseio de servidor do minecraft",
   "dependencies": {
+    "@prisma/client": "^5.20.0",
+    "axios": "^1.7.7",
     "discord.js": "^14.16.3",
+    "dockerode": "^4.0.2",
     "dotenv": "^16.4.5",
     "rcon-client": "^4.2.5",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/dockerode": "^3.3.31",
     "@types/node": "^22.7.5",
     "@types/ws": "^8.5.12",
     "prisma": "^5.20.0",

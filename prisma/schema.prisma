@@ -14,19 +14,18 @@ datasource db {
 }
 
 model Server {
-  id             String     @id @default(auto()) @map("_id") @db.ObjectId
-  name           String
-  ipAddress      String
-  port           Int
-  version        String
-  status         String
-  maxPlayers     Int
-  currentPlayers Int
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
-  rconPassword   String
-  description    String?
-  discordGuildId String
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String   // Nome do servidor (definido pelo usuário)
+  ipAddress     String   // Endereço IP do contêiner do servidor
+  port          Int      // Porta do servidor (normalmente 25565)
+  version       String   // Versão do Minecraft
+  status        String   // Status do servidor (ativo, inativo, em criação, etc.)
+  createdAt     DateTime @default(now()) // Data de criação do servidor
+  updatedAt     DateTime @updatedAt      // Data da última atualização
+  ownerGuildId  String   // Guild ID do Discord (servidor que criou)
+  containerId   String?  // ID do contêiner Docker (para controle)
+  maxPlayers    Int      // Número máximo de jogadores
+  description   String?  // Descrição do servidor (opcional)
   ops            Operator[]
 }
 
