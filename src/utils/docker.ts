@@ -28,7 +28,7 @@ export async function createMinecraftServer(config: MinecraftServerConfig) {
   try {
     const availablePort = await getAvailablePort();
     const container = await docker.createContainer({
-      Image: "itzg/minecraft-server",
+      Image: `itzg/minecraft-server`,
       name: `mc-server-${validatedConfig.name
         .toLocaleLowerCase()
         .replace(/ /g, "-")
@@ -45,6 +45,7 @@ export async function createMinecraftServer(config: MinecraftServerConfig) {
         `ALLOW_NETHER=${validatedConfig.allowNether}`,
         `ONLINE_MODE=${validatedConfig.onlineMode}`,
         `MOTD=${validatedConfig.motd}`,
+        'MEMORY: 4G'
       ],
       HostConfig: {
         PortBindings: {
