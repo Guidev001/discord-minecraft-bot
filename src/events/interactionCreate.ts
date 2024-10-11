@@ -1,5 +1,6 @@
 import { Interaction } from 'discord.js';
 import { statusSlashCommand } from '../commands/slash/server/public/status';
+import { createCommand } from '../commands/slash/server/moderation/create';
 
 export default async function interactionCreate(interaction: Interaction) {
   console.log('Received interaction:', interaction);
@@ -11,13 +12,11 @@ export default async function interactionCreate(interaction: Interaction) {
 
   switch (commandName) {
     case 'status':
-      console.log('Executing status command...');
       await statusSlashCommand(interaction);
       break;
-    // case 'create':
-    //   console.log('Executing status command...');
-    //   await createCommand(interaction);
-    //   break;
+    case 'create':
+      await createCommand(interaction);
+      break;
     default:
       break;
   }

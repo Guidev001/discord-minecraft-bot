@@ -3,14 +3,33 @@ import config from '../schemas/config';
 
 const commands = [
   {
-    name: "create",
-    description: 'Create a minecraft server'
+    name: 'create',
+    description: 'Create a Minecraft server',
+    options: [
+      {
+        name: 'name',
+        description: 'The name of the server',
+        type: 3, // STRING
+        required: true
+      },
+      {
+        name: 'version',
+        description: 'Minecraft version',
+        type: 3, // STRING
+        required: true
+      },
+      {
+        name: 'maxplayers',
+        description: 'Maximum number of players',
+        type: 4, // INTEGER
+        required: true
+      },
+    ],
   },
   {
     name: 'status',
     description: 'Check the status of the Minecraft server',
   },
-  // Adicione outros comandos aqui conforme necessário
 ];
 
 export async function registerCommands() {

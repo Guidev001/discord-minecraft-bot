@@ -1,17 +1,38 @@
-import Docker from 'dockerode';
-import { prisma } from '../utils/prisma';
-import { MinecraftServerConfig, MinecraftServerConfigSchema } from '../schemas/minecraft';
+import Docker from "dockerode";
+import { prisma } from "../utils/prisma";
+import {
+  MinecraftServerConfig,
+  MinecraftServerConfigSchema,
+} from "../schemas/minecraft";
 
 const docker = new Docker();
 
-export async function createMinecraftServer(config: MinecraftServerConfig) {
+export async function getAvailablePort() {
+  const servers = await prisma.server.findMany({
+    select: { port: true },
+  });
 
+  const usedPorts = servers.map((server) => server.port);
+
+  let port = 25565;
+  while (usedPorts.includes(port)) {
+    port += 1;
+  }
+
+  return port;
+}
+
+export async function createMinecraftServer(config: MinecraftServerConfig) {
   const validatedConfig = MinecraftServerConfigSchema.parse(config);
 
   try {
+    const availablePort = await getAvailablePort();
     const container = await docker.createContainer({
-      Image: 'itzg/minecraft-server',
-      name: `mc-server-${validatedConfig.name.toLocaleLowerCase()}`,
+      Image: "itzg/minecraft-server",
+      name: `mc-server-${validatedConfig.name
+        .toLocaleLowerCase()
+        .replace(/ /g, "-")
+        .trim()}`,
       Env: [
         `EULA=TRUE`,
         `VERSION=${validatedConfig.version}`,
@@ -22,17 +43,17 @@ export async function createMinecraftServer(config: MinecraftServerConfig) {
         `HARDCORE=${validatedConfig.hardcore}`,
         `ALLOW_PVP=${validatedConfig.allowPvp}`,
         `ALLOW_NETHER=${validatedConfig.allowNether}`,
-        `ONLINE_MODE=${validatedConfig.onlineMode}`, 
+        `ONLINE_MODE=${validatedConfig.onlineMode}`,
         `MOTD=${validatedConfig.motd}`,
       ],
       HostConfig: {
         PortBindings: {
-          '25565/tcp': [{ HostPort: '25565' }]
-        }
+          "25565/tcp": [{ HostPort: availablePort.toString() }], // Usando a porta disponível
+        },
       },
       ExposedPorts: {
-        '25565/tcp': {}
-      }
+        "25565/tcp": {},
+      },
     });
 
     await container.start();
@@ -43,7 +64,7 @@ export async function createMinecraftServer(config: MinecraftServerConfig) {
     const newServer = await prisma.server.create({
       data: {
         name: validatedConfig.name,
-        version: validatedConfig.version,  
+        version: validatedConfig.version,
         maxPlayers: validatedConfig.maxPlayers,
         gameMode: validatedConfig.gameMode,
         difficulty: validatedConfig.difficulty,
@@ -53,16 +74,16 @@ export async function createMinecraftServer(config: MinecraftServerConfig) {
         onlineMode: validatedConfig.onlineMode,
         motd: validatedConfig.motd,
         ipAddress,
-        port: 25565,
-        status: 'ativo',
+        port: availablePort,
+        status: "ativo",
         containerId: container.id,
         ownerGuildId: validatedConfig.ownerGuildId,
-      }
+      },
     });
 
     return newServer;
   } catch (error) {
-    console.error('Error creating Minecraft server:', error);
-    throw new Error('Failed to create Minecraft server.');
+    console.error("Error creating Minecraft server:", error);
+    throw new Error("Failed to create Minecraft server.");
   }
 }
