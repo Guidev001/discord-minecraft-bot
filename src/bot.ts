@@ -1,7 +1,7 @@
 // src/bot.ts
 
 import { Client, GatewayIntentBits } from 'discord.js';
-import config from './config';
+import config from './schemas/config';
 import ready from './events/ready';
 import interactionCreate from './events/interactionCreate';
 import { registerCommands } from './commands/register';

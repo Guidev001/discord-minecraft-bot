@@ -14,26 +14,52 @@ datasource db {
 }
 
 model Server {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  name          String   // Nome do servidor (definido pelo usuário)
-  ipAddress     String   // Endereço IP do contêiner do servidor
-  port          Int      // Porta do servidor (normalmente 25565)
-  version       String   // Versão do Minecraft
-  status        String   // Status do servidor (ativo, inativo, em criação, etc.)
-  createdAt     DateTime @default(now()) // Data de criação do servidor
-  updatedAt     DateTime @updatedAt      // Data da última atualização
-  ownerGuildId  String   // Guild ID do Discord (servidor que criou)
-  containerId   String?  // ID do contêiner Docker (para controle)
-  maxPlayers    Int      // Número máximo de jogadores
-  description   String?  // Descrição do servidor (opcional)
-  ops            Operator[]
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  version      String
+  maxPlayers   Int
+  gameMode     GameMode?
+  difficulty   Difficulty?
+  hardcore     Boolean?
+  allowPvp     Boolean?
+  allowNether  Boolean?
+  onlineMode   Boolean?
+  motd         String?
+  ipAddress    String
+  port         Int
+  status       ServerStatus
+  containerId  String?
+  ownerGuildId String
+  ops          Operator[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 }
 
 model Operator {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   username  String
   level     Int
-  createdAt DateTime @default(now()) 
+  createdAt DateTime @default(now())
   serverId  String   @db.ObjectId
   server    Server   @relation(fields: [serverId], references: [id])
+}
+
+enum GameMode {
+  survival
+  creative
+  adventure
+  spectator
+}
+
+enum Difficulty {
+  peaceful
+  easy
+  normal
+  hard
+}
+
+enum ServerStatus {
+  ativo
+  inativo
+  parado
 }

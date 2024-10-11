@@ -1,19 +1,29 @@
 import Docker from 'dockerode';
 import { prisma } from '../utils/prisma';
+import { MinecraftServerConfig, MinecraftServerConfigSchema } from '../schemas/minecraft';
 
 const docker = new Docker();
 
-export async function createMinecraftServer(name: string, version: string, maxPlayers: number, ownerGuildId: string) {
-  try {
+export async function createMinecraftServer(config: MinecraftServerConfig) {
 
+  const validatedConfig = MinecraftServerConfigSchema.parse(config);
+
+  try {
     const container = await docker.createContainer({
       Image: 'itzg/minecraft-server',
-      name: `mc-server-${name.toLocaleLowerCase()}`,
+      name: `mc-server-${validatedConfig.name.toLocaleLowerCase()}`,
       Env: [
         `EULA=TRUE`,
-        `VERSION=${version}`,
-        `MAX_PLAYERS=${maxPlayers}`,
-        `SERVER_NAME=${name}`,
+        `VERSION=${validatedConfig.version}`,
+        `MAX_PLAYERS=${validatedConfig.maxPlayers}`,
+        `SERVER_NAME=${validatedConfig.name}`,
+        `GAME_MODE=${validatedConfig.gameMode}`,
+        `DIFFICULTY=${validatedConfig.difficulty}`,
+        `HARDCORE=${validatedConfig.hardcore}`,
+        `ALLOW_PVP=${validatedConfig.allowPvp}`,
+        `ALLOW_NETHER=${validatedConfig.allowNether}`,
+        `ONLINE_MODE=${validatedConfig.onlineMode}`, 
+        `MOTD=${validatedConfig.motd}`,
       ],
       HostConfig: {
         PortBindings: {
@@ -27,21 +37,26 @@ export async function createMinecraftServer(name: string, version: string, maxPl
 
     await container.start();
 
-    // Pegar o IP do contêiner
     const containerInfo = await container.inspect();
     const ipAddress = containerInfo.NetworkSettings.IPAddress;
 
-    // Salvar informações do servidor no banco de dados usando Prisma
     const newServer = await prisma.server.create({
       data: {
-        name,
+        name: validatedConfig.name,
+        version: validatedConfig.version,  
+        maxPlayers: validatedConfig.maxPlayers,
+        gameMode: validatedConfig.gameMode,
+        difficulty: validatedConfig.difficulty,
+        hardcore: validatedConfig.hardcore,
+        allowPvp: validatedConfig.allowPvp,
+        allowNether: validatedConfig.allowNether,
+        onlineMode: validatedConfig.onlineMode,
+        motd: validatedConfig.motd,
         ipAddress,
         port: 25565,
-        version,
         status: 'ativo',
-        ownerGuildId,
         containerId: container.id,
-        maxPlayers
+        ownerGuildId: validatedConfig.ownerGuildId,
       }
     });
 

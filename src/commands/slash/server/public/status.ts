@@ -1,5 +1,5 @@
 import { CommandInteraction } from 'discord.js';
-import { sendRconCommand } from '../../utils/rcon';
+import { sendRconCommand } from '../../../../utils/rcon';
 
 export async function statusSlashCommand(interaction: CommandInteraction) {
   try {
