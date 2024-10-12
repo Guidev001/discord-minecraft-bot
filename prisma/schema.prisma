@@ -59,7 +59,7 @@ enum Difficulty {
 }
 
 enum ServerStatus {
-  ativo
-  inativo
-  parado
+  active
+  inactive
+  stopped
 }

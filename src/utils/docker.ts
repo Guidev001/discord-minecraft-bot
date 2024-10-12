@@ -49,7 +49,7 @@ export async function createMinecraftServer(config: MinecraftServerConfig) {
       ],
       HostConfig: {
         PortBindings: {
-          "25565/tcp": [{ HostPort: availablePort.toString() }], // Usando a porta disponível
+          "25565/tcp": [{ HostPort: availablePort.toString() }],
         },
       },
       ExposedPorts: {
@@ -76,7 +76,7 @@ export async function createMinecraftServer(config: MinecraftServerConfig) {
         motd: validatedConfig.motd,
         ipAddress,
         port: availablePort,
-        status: "ativo",
+        status: "active",
         containerId: container.id,
         ownerGuildId: validatedConfig.ownerGuildId,
       },
