@@ -1,5 +1,5 @@
 import { Rcon } from 'rcon-client';
-import config from '../config';
+import config from '../schemas/config';
 
 export async function sendRconCommand(command: string): Promise<string> {
   const rcon = await Rcon.connect({
