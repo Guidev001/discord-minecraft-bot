@@ -14,27 +14,52 @@ datasource db {
 }
 
 model Server {
-  id             String     @id @default(auto()) @map("_id") @db.ObjectId
-  name           String
-  ipAddress      String
-  port           Int
-  version        String
-  status         String
-  maxPlayers     Int
-  currentPlayers Int
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
-  rconPassword   String
-  description    String?
-  discordGuildId String
-  ops            Operator[]
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  version      String
+  maxPlayers   Int
+  gameMode     GameMode?
+  difficulty   Difficulty?
+  hardcore     Boolean?
+  allowPvp     Boolean?
+  allowNether  Boolean?
+  onlineMode   Boolean?
+  motd         String?
+  ipAddress    String
+  port         Int
+  status       ServerStatus
+  containerId  String?
+  ownerGuildId String
+  ops          Operator[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 }
 
 model Operator {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   username  String
   level     Int
-  createdAt DateTime @default(now()) 
+  createdAt DateTime @default(now())
   serverId  String   @db.ObjectId
   server    Server   @relation(fields: [serverId], references: [id])
+}
+
+enum GameMode {
+  survival
+  creative
+  adventure
+  spectator
+}
+
+enum Difficulty {
+  peaceful
+  easy
+  normal
+  hard
+}
+
+enum ServerStatus {
+  active
+  inactive
+  stopped
 }
